@@ -4,7 +4,7 @@ Go log viewer
 [![Build Status](https://travis-ci.org/ermanimer/log-viewer.svg?branch=master)](https://travis-ci.org/ermanimer/log-viewer)
 
 ## Features
-go-log-viewer views log files which are created by [logger](https://github.com/ermanimer/logger).
+go-log-viewer views log files which are created with [logger](https://github.com/ermanimer/logger).
 
 ## Installation
 ```bash
