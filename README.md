@@ -44,11 +44,6 @@ log-viewer -h
 
 For prefixes, use combination of **d** for debug messages, **i** for information messages, **w** for warning messages, **e** for error messages, **f** for fatal messages.
 
-#### Help
-```bash
-go-log-viewer --h
-```
-
 ## Terminal Output
 ![Terminal Output](/images/terminal_output.png)
 
