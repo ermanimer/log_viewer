@@ -1,7 +1,7 @@
 # go-log-viewer
 Go log viewer
 
-[![Build Status](https://travis-ci.org/ermanimer/log-viewer.svg?branch=master)](https://travis-ci.org/ermanimer/log-viewer)
+![Go](https://github.com/ermanimer/log-viewer/workflows/Go/badge.svg)
 
 ## Features
 go-log-viewer views log files which are created with [logger](https://github.com/ermanimer/logger).
