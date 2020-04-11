@@ -22,7 +22,7 @@ const (
 
 //default filename and default prefixes
 const (
-	filename = "default.logs"
+	filename = "default.log"
 	prefixes = "diwef"
 )
 
