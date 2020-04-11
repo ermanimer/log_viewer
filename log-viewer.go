@@ -38,8 +38,8 @@ type Log struct {
 	message        string
 }
 
-var longestPrefixLength int
 var longestCallerFunctionLength int
+var longestPrefixLength int
 
 func main() {
 	filename := flag.String("f", filename, "Filename")
@@ -97,8 +97,8 @@ func viewLogs(filename string, prefixes string) {
 		}
 		if viewLog {
 			logs = append(logs, *log)
-			updateLongestPrefixLength(log.prefix)
 			updateLongestCallerFunctionLength(log.callerFunction)
+			updateLongestPrefixLength(log.prefix)
 		}
 	}
 	//view log
@@ -122,13 +122,6 @@ func parseLog(line string) *Log {
 	return &log
 }
 
-func updateLongestPrefixLength(prefix string) {
-	prefixLength := len(prefix)
-	if prefixLength > longestPrefixLength {
-		longestPrefixLength = prefixLength
-	}
-}
-
 func updateLongestCallerFunctionLength(callerFunction string) {
 	callerFunctionLength := len(callerFunction)
 	if callerFunctionLength > longestCallerFunctionLength {
@@ -136,12 +129,25 @@ func updateLongestCallerFunctionLength(callerFunction string) {
 	}
 }
 
+func updateLongestPrefixLength(prefix string) {
+	prefixLength := len(prefix)
+	if prefixLength > longestPrefixLength {
+		longestPrefixLength = prefixLength
+	}
+}
+
 func viewLog(log *Log) {
-	setPrefixLength(log)
-	setPrefixColor(log)
 	setCallerFunctionLength(log)
+	setPrefixLength(log)
+	setDatetimeColor(log)
 	setCallerFunctionColor(log)
-	fmt.Printf("[%v][%v][%v]: %v%v", log.datetime, log.prefix, log.callerFunction, log.message, newLine)
+	setPrefixColor(log)
+	fmt.Printf("%v %v %v: %v%v", log.datetime, log.callerFunction, log.prefix, log.message, newLine)
+}
+
+func setCallerFunctionLength(log *Log) {
+	padding := strings.Repeat(" ", longestCallerFunctionLength-len(log.callerFunction))
+	log.callerFunction = fmt.Sprintf("%v%v", log.callerFunction, padding)
 }
 
 func setPrefixLength(log *Log) {
@@ -149,9 +155,12 @@ func setPrefixLength(log *Log) {
 	log.prefix = fmt.Sprintf("%v%v", log.prefix, padding)
 }
 
-func setCallerFunctionLength(log *Log) {
-	padding := strings.Repeat(" ", longestCallerFunctionLength-len(log.callerFunction))
-	log.callerFunction = fmt.Sprintf("%v%v", log.callerFunction, padding)
+func setDatetimeColor(log *Log) {
+	log.datetime = color.Blue(log.datetime)
+}
+
+func setCallerFunctionColor(log *Log) {
+	log.callerFunction = color.Blue(log.callerFunction)
 }
 
 func setPrefixColor(log *Log) {
@@ -167,10 +176,6 @@ func setPrefixColor(log *Log) {
 	case fatalPrefix:
 		log.prefix = color.Magenta(log.prefix)
 	}
-}
-
-func setCallerFunctionColor(log *Log) {
-	log.callerFunction = color.Blue(log.callerFunction)
 }
 
 func printError(message string) {
