@@ -137,17 +137,11 @@ func updateLongestPrefixLength(prefix string) {
 }
 
 func viewLog(log *Log) {
-	setCallerFunctionLength(log)
 	setPrefixLength(log)
-	setDatetimeColor(log)
-	setCallerFunctionColor(log)
+	setCallerFunctionLength(log)
 	setPrefixColor(log)
-	fmt.Printf("%v %v %v: %v%v", log.datetime, log.callerFunction, log.prefix, log.message, newLine)
-}
-
-func setCallerFunctionLength(log *Log) {
-	padding := strings.Repeat(" ", longestCallerFunctionLength-len(log.callerFunction))
-	log.callerFunction = fmt.Sprintf("%v%v", log.callerFunction, padding)
+	setCallerFunctionColor(log)
+	fmt.Printf("[%v][%v][%v]%v%v", log.datetime, log.prefix, log.callerFunction, log.message, newLine)
 }
 
 func setPrefixLength(log *Log) {
@@ -155,12 +149,9 @@ func setPrefixLength(log *Log) {
 	log.prefix = fmt.Sprintf("%v%v", log.prefix, padding)
 }
 
-func setDatetimeColor(log *Log) {
-	log.datetime = color.Blue(log.datetime)
-}
-
-func setCallerFunctionColor(log *Log) {
-	log.callerFunction = color.Blue(log.callerFunction)
+func setCallerFunctionLength(log *Log) {
+	padding := strings.Repeat(" ", longestCallerFunctionLength-len(log.callerFunction))
+	log.callerFunction = fmt.Sprintf("%v%v", log.callerFunction, padding)
 }
 
 func setPrefixColor(log *Log) {
@@ -174,8 +165,12 @@ func setPrefixColor(log *Log) {
 	case errorPrefix:
 		log.prefix = color.Red(log.prefix)
 	case fatalPrefix:
-		log.prefix = color.Magenta(log.prefix)
+		log.prefix = color.Red(log.prefix)
 	}
+}
+
+func setCallerFunctionColor(log *Log) {
+	log.callerFunction = color.Magenta(log.callerFunction)
 }
 
 func printError(message string) {
