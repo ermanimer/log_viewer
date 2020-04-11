@@ -1,3 +1,0 @@
-# github.com/ermanimer/color v1.0.0
-## explicit
-github.com/ermanimer/color
