@@ -21,10 +21,10 @@ go get -v github.com/ermanimer/log-viewer
 | fatalPrefix   | Fatal   | Prefix for fatal messages   |
 
 ## Default Filename and Prefixes
-| Constant        | Value | Description       |
-| :-------------- | :---- | :---------------- |
-| defaultFilename | logs  | Default file name |
-| defaultPrefixes | diwef | Default prefixes  |
+| Constant | Value       | Description       |
+| :--------| :---------- | :---------------- |
+| filename | default.log | Default file name |
+| prefixes | diwef       | Default prefixes  |
 
 ## Usage
 #### With default filename and prefixes
