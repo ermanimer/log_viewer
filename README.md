@@ -4,7 +4,7 @@ Go log viewer
 ![Go](https://github.com/ermanimer/log-viewer/workflows/Go/badge.svg)
 
 ## Features
-go-log-viewer views log files which are created with [logger](https://github.com/ermanimer/logger).
+go-log-viewer views log files which are created with [logger](https://github.com/ermanimer/logger) on Linux.
 
 ## Installation
 ```bash
