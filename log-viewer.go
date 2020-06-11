@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -73,9 +74,9 @@ func viewLogs(filename string, prefixes string) {
 		}
 		line := string(bytesOfLine)
 		//parse log
-		log := parseLog(line)
-		if log == nil {
-			printError("Parsing log failed!")
+		log, err := parseLog(line)
+		if err != nil {
+			printError(err.Error())
 			return
 		}
 		//filter log
@@ -107,11 +108,10 @@ func viewLogs(filename string, prefixes string) {
 	}
 }
 
-func parseLog(line string) *Log {
-	line = strings.Trim(line, "[]")
-	segments := strings.Split(line, "][")
+func parseLog(line string) (*Log, error) {
+	segments := strings.Split(line[1:len(line)-1], "][")
 	if len(segments) != 4 {
-		return nil
+		return nil, errors.New("Parsing log failed!")
 	}
 	log := Log{
 		datetime:       segments[0],
@@ -119,7 +119,7 @@ func parseLog(line string) *Log {
 		callerFunction: segments[2],
 		message:        segments[3],
 	}
-	return &log
+	return &log, nil
 }
 
 func updateLongestCallerFunctionLength(callerFunction string) {
