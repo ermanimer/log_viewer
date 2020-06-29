@@ -8,7 +8,7 @@ go-log-viewer views log files which are created with [logger](https://github.com
 
 ## Installation
 ```bash
-go get -v github.com/ermanimer/log-viewer
+go get -u github.com/ermanimer/log-viewer
 ```
 
 ## Prefixes
