@@ -1,4 +1,4 @@
-# log-viewer
+# log_viewer
 Go log viewer
 
 ![Go](https://github.com/ermanimer/log_viewer/workflows/Go/badge.svg)
