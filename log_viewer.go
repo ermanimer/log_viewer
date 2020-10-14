@@ -43,8 +43,8 @@ var longestCallerFunctionLength int
 var longestPrefixLength int
 
 func main() {
-	filename := flag.String("f", filename, "Filename")
-	prefixes := flag.String("p", prefixes, "Prefixes to view.")
+	filename := flag.String("f", filename, "filename")
+	prefixes := flag.String("p", prefixes, "prefixes to view.")
 	flag.Parse()
 	viewLogs(*filename, *prefixes)
 }
@@ -53,13 +53,13 @@ func viewLogs(filename string, prefixes string) {
 	//open log file
 	logFile, err := os.Open(filename)
 	if err != nil {
-		printError("Opening log file failed!")
+		printError("opening log file failed")
 		return
 	}
 	defer func() {
 		err = logFile.Close()
 		if err != nil {
-			printError("Closing log file failed!")
+			printError("closing log file failed")
 		}
 	}()
 	//read lines from log file
@@ -111,7 +111,7 @@ func viewLogs(filename string, prefixes string) {
 func parseLog(line string) (*Log, error) {
 	segments := strings.Split(line[1:len(line)-1], "][")
 	if len(segments) != 4 {
-		return nil, errors.New("Parsing log failed!")
+		return nil, errors.New("parsing log failed")
 	}
 	log := Log{
 		datetime:       segments[0],
@@ -174,5 +174,5 @@ func setCallerFunctionColor(log *Log) {
 }
 
 func printError(message string) {
-	fmt.Printf("log-viewer: %s%s", message, newLine)
+	fmt.Printf("log_viewer: %s%s", message, newLine)
 }
