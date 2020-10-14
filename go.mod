@@ -1,4 +1,4 @@
-module github.com/ermanimer/log-viewer
+module github.com/ermanimer/log_viewer
 
 go 1.14
 
