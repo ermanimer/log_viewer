@@ -53,13 +53,13 @@ func viewLogs(filename string, prefixes string) {
 	//open log file
 	logFile, err := os.Open(filename)
 	if err != nil {
-		printError("opening log file failed")
+		fmt.Println("opening log file failed")
 		return
 	}
 	defer func() {
 		err = logFile.Close()
 		if err != nil {
-			printError("closing log file failed")
+			fmt.Println("closing log file failed")
 		}
 	}()
 	//read lines from log file
@@ -76,7 +76,7 @@ func viewLogs(filename string, prefixes string) {
 		//parse log
 		log, err := parseLog(line)
 		if err != nil {
-			printError(err.Error())
+			fmt.Println(err.Error())
 			return
 		}
 		//filter log
@@ -171,8 +171,4 @@ func setPrefixColor(log *Log) {
 
 func setCallerFunctionColor(log *Log) {
 	log.callerFunction = color.Magenta(log.callerFunction)
-}
-
-func printError(message string) {
-	fmt.Printf("log_viewer: %s%s", message, newLine)
 }
