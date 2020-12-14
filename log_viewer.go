@@ -9,7 +9,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/ermanimer/color"
+	c "github.com/ermanimer/color/v2"
 )
 
 //prefixes
@@ -27,23 +27,41 @@ const (
 	prefixes = "diwef"
 )
 
-//new line character for Linux
-const (
-	newLine = "\n"
-)
-
-type Log struct {
+type log struct {
 	datetime string
 	prefix   string
 	message  string
 }
 
-var longestPrefixLength int
+//color print functions
+var (
+	printlnError        func(values ...interface{})
+	printfDatetime      func(format string, values ...interface{})
+	printfDebugPrefix   func(format string, values ...interface{})
+	printfInfoPrefix    func(format string, values ...interface{})
+	printfWarningPrefix func(format string, values ...interface{})
+	printfErrorPrefix   func(format string, values ...interface{})
+	printfFatalPrefix   func(format string, values ...interface{})
+	printlnMessage      func(values ...interface{})
+)
+
+var prefixLength int
 
 func main() {
+	//parse flags
 	filename := flag.String("f", filename, "filename")
 	prefixes := flag.String("p", prefixes, "prefixes to view")
 	flag.Parse()
+	//create print functions
+	printlnError = (&c.Color{Foreground: 1}).PrintlnFunction()
+	printfDatetime = (&c.Color{Foreground: 240}).PrintfFunction()
+	printfDebugPrefix = (&c.Color{Foreground: 246}).PrintfFunction()
+	printfInfoPrefix = (&c.Color{Foreground: 12}).PrintfFunction()
+	printfWarningPrefix = (&c.Color{Foreground: 11}).PrintfFunction()
+	printfErrorPrefix = (&c.Color{Foreground: 9}).PrintfFunction()
+	printfFatalPrefix = (&c.Color{Foreground: 13}).PrintfFunction()
+	printlnMessage = (&c.Color{Foreground: 252}).PrintlnFunction()
+	//view logs
 	viewLogs(*filename, *prefixes)
 }
 
@@ -51,101 +69,97 @@ func viewLogs(filename string, prefixes string) {
 	//open log file
 	logFile, err := os.Open(filename)
 	if err != nil {
-		fmt.Println("opening log file failed")
+		printlnError("opening log file failed")
 		return
 	}
 	defer func() {
 		err = logFile.Close()
 		if err != nil {
-			fmt.Println("closing log file failed")
+			printlnError("closing log file failed")
 		}
 	}()
 	//read lines from log file
-	var logs []Log
-	longestPrefixLength = 0
-	reader := bufio.NewReader(logFile)
+	var ls []*log
+	r := bufio.NewReader(logFile)
+	lineNumber := 0
 	for {
-		bytesOfLine, _, err := reader.ReadLine()
+		lineNumber++
+		line, _, err := r.ReadLine()
 		if err == io.EOF {
 			break
 		}
-		line := string(bytesOfLine)
 		//parse log
-		log, err := parseLog(line)
+		l, err := parseLog(string(line))
 		if err != nil {
-			fmt.Println(err.Error())
-			return
+			printlnError(err.Error(), " on line  ", lineNumber)
+			continue
 		}
 		//filter log
-		viewLog := false
-		if log.prefix == debugPrefix && strings.Contains(prefixes, "d") {
-			viewLog = true
-		}
-		if log.prefix == infoPrefix && strings.Contains(prefixes, "i") {
-			viewLog = true
-		}
-		if log.prefix == warningPrefix && strings.Contains(prefixes, "w") {
-			viewLog = true
-		}
-		if log.prefix == errorPrefix && strings.Contains(prefixes, "e") {
-			viewLog = true
-		}
-		if log.prefix == fatalPrefix && strings.Contains(prefixes, "f") {
-			viewLog = true
-		}
-		if viewLog {
-			logs = append(logs, *log)
-			updateLongestPrefixLength(log.prefix)
+		switch {
+		case l.prefix == debugPrefix && strings.Contains(prefixes, "d"):
+			ls = append(ls, l)
+			updatePrefixLength(l.prefix)
+		case l.prefix == infoPrefix && strings.Contains(prefixes, "i"):
+			ls = append(ls, l)
+			updatePrefixLength(l.prefix)
+		case l.prefix == warningPrefix && strings.Contains(prefixes, "w"):
+			ls = append(ls, l)
+			updatePrefixLength(l.prefix)
+		case l.prefix == errorPrefix && strings.Contains(prefixes, "e"):
+			ls = append(ls, l)
+			updatePrefixLength(l.prefix)
+		case l.prefix == fatalPrefix && strings.Contains(prefixes, "f"):
+			ls = append(ls, l)
+			updatePrefixLength(l.prefix)
+		default:
+			printlnError("filtering prefix failed on line ", lineNumber)
 		}
 	}
 	//view log
-	for _, log := range logs {
-		viewLog(&log)
+	for _, l := range ls {
+		viewLog(l)
 	}
 }
 
-func parseLog(line string) (*Log, error) {
+func parseLog(line string) (*log, error) {
 	segments := strings.Split(line[1:len(line)-1], "][")
 	if len(segments) != 3 {
 		return nil, errors.New("parsing log failed")
 	}
-	log := Log{
+	l := &log{
 		datetime: segments[0],
 		prefix:   segments[1],
 		message:  segments[2],
 	}
-	return &log, nil
+	return l, nil
 }
 
-func updateLongestPrefixLength(prefix string) {
-	prefixLength := len(prefix)
-	if prefixLength > longestPrefixLength {
-		longestPrefixLength = prefixLength
-	}
-}
-
-func viewLog(log *Log) {
-	setPrefixLength(log)
-	setPrefixColor(log)
-	fmt.Printf("[%s][%s]%s%s", log.datetime, log.prefix, log.message, newLine)
-}
-
-func setPrefixLength(log *Log) {
-	padding := strings.Repeat(" ", longestPrefixLength-len(log.prefix))
-	log.prefix = fmt.Sprintf("%s%s", log.prefix, padding)
-}
-
-func setPrefixColor(log *Log) {
-	switch strings.TrimSpace(log.prefix) {
+func viewLog(l *log) {
+	setPrefixLength(l)
+	printfDatetime("%s ", l.datetime)
+	switch strings.TrimSpace(l.prefix) {
 	case debugPrefix:
-		log.prefix = color.Cyan(log.prefix)
+		printfDebugPrefix("%s ", l.prefix)
 	case infoPrefix:
-		log.prefix = color.Green(log.prefix)
+		printfInfoPrefix("%s ", l.prefix)
 	case warningPrefix:
-		log.prefix = color.Yellow(log.prefix)
+		printfWarningPrefix("%s ", l.prefix)
 	case errorPrefix:
-		log.prefix = color.Red(log.prefix)
+		printfErrorPrefix("%s ", l.prefix)
 	case fatalPrefix:
-		log.prefix = color.Red(log.prefix)
+		printfFatalPrefix("%s ", l.prefix)
 	}
+	printlnMessage(l.message)
+}
+
+func updatePrefixLength(prefix string) {
+	length := len(prefix)
+	if length > prefixLength {
+		prefixLength = length
+	}
+}
+
+func setPrefixLength(l *log) {
+	padding := strings.Repeat(" ", prefixLength-len(l.prefix))
+	l.prefix = fmt.Sprintf("%s%s", l.prefix, padding)
 }
