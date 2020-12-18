@@ -35,14 +35,14 @@ type log struct {
 
 //color print functions
 var (
-	printlnError        func(values ...interface{})
-	printfDatetime      func(format string, values ...interface{})
-	printfDebugPrefix   func(format string, values ...interface{})
-	printfInfoPrefix    func(format string, values ...interface{})
-	printfWarningPrefix func(format string, values ...interface{})
-	printfErrorPrefix   func(format string, values ...interface{})
-	printfFatalPrefix   func(format string, values ...interface{})
-	printlnMessage      func(values ...interface{})
+	printlnError        = (&c.Color{Foreground: 1}).PrintlnFunction()
+	printfDatetime      = (&c.Color{Foreground: 240}).PrintfFunction()
+	printfDebugPrefix   = (&c.Color{Foreground: 246}).PrintfFunction()
+	printfInfoPrefix    = (&c.Color{Foreground: 12}).PrintfFunction()
+	printfWarningPrefix = (&c.Color{Foreground: 11}).PrintfFunction()
+	printfErrorPrefix   = (&c.Color{Foreground: 9}).PrintfFunction()
+	printfFatalPrefix   = (&c.Color{Foreground: 13}).PrintfFunction()
+	printlnMessage      = (&c.Color{Foreground: 252}).PrintlnFunction()
 )
 
 var prefixLength int
@@ -52,15 +52,6 @@ func main() {
 	filename := flag.String("f", filename, "filename")
 	prefixes := flag.String("p", prefixes, "prefixes to view")
 	flag.Parse()
-	//create print functions
-	printlnError = (&c.Color{Foreground: 1}).PrintlnFunction()
-	printfDatetime = (&c.Color{Foreground: 240}).PrintfFunction()
-	printfDebugPrefix = (&c.Color{Foreground: 246}).PrintfFunction()
-	printfInfoPrefix = (&c.Color{Foreground: 12}).PrintfFunction()
-	printfWarningPrefix = (&c.Color{Foreground: 11}).PrintfFunction()
-	printfErrorPrefix = (&c.Color{Foreground: 9}).PrintfFunction()
-	printfFatalPrefix = (&c.Color{Foreground: 13}).PrintfFunction()
-	printlnMessage = (&c.Color{Foreground: 252}).PrintlnFunction()
 	//view logs
 	viewLogs(*filename, *prefixes)
 }
