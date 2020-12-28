@@ -86,22 +86,32 @@ func viewLogs(filename string, prefixes string) {
 			continue
 		}
 		//filter log
-		switch {
-		case l.prefix == debugPrefix && strings.Contains(prefixes, "d"):
-			ls = append(ls, l)
-			updatePrefixLength(l.prefix)
-		case l.prefix == infoPrefix && strings.Contains(prefixes, "i"):
-			ls = append(ls, l)
-			updatePrefixLength(l.prefix)
-		case l.prefix == warningPrefix && strings.Contains(prefixes, "w"):
-			ls = append(ls, l)
-			updatePrefixLength(l.prefix)
-		case l.prefix == errorPrefix && strings.Contains(prefixes, "e"):
-			ls = append(ls, l)
-			updatePrefixLength(l.prefix)
-		case l.prefix == fatalPrefix && strings.Contains(prefixes, "f"):
-			ls = append(ls, l)
-			updatePrefixLength(l.prefix)
+		switch l.prefix {
+		case debugPrefix:
+			if strings.Contains(prefixes, "d") {
+				ls = append(ls, l)
+				updatePrefixLength(l.prefix)
+			}
+		case infoPrefix:
+			if strings.Contains(prefixes, "i") {
+				ls = append(ls, l)
+				updatePrefixLength(l.prefix)
+			}
+		case warningPrefix:
+			if strings.Contains(prefixes, "w") {
+				ls = append(ls, l)
+				updatePrefixLength(l.prefix)
+			}
+		case errorPrefix:
+			if strings.Contains(prefixes, "e") {
+				ls = append(ls, l)
+				updatePrefixLength(l.prefix)
+			}
+		case fatalPrefix:
+			if strings.Contains(prefixes, "f") {
+				ls = append(ls, l)
+				updatePrefixLength(l.prefix)
+			}
 		default:
 			printlnError("filtering prefix failed on line ", lineNumber)
 		}
