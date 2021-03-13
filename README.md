@@ -5,7 +5,7 @@ Go log viewer
 [![Go Report Card](https://goreportcard.com/badge/github.com/ermanimer/log_viewer)](https://goreportcard.com/report/github.com/ermanimer/log_viewer)
 
 ## Features
-go log_viewer views log files which are created with [logger](https://github.com/ermanimer/logger) on Linux.
+go log_viewer views log files which are created with [logger](https://github.com/ermanimer/logger) on Unix based systems.
 
 ## Installation
 ```bash
